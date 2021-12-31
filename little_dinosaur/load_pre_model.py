@@ -1,10 +1,12 @@
 import os
 
-def load_pre_model():
+def load_pre_model(path):
     
     pre_model = {}
     
-    dir_path = os.path.dirname(os.path.abspath(__file__))
+    # dir_path = os.path.dirname(os.path.abspath(__file__))
+    dir_path = os.path.join(path,'pre_training_model')
+
     pre_path = os.path.join(dir_path,'pre_model')
 
     pre_model['albert'] = {}
