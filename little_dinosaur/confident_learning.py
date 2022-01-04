@@ -1,5 +1,4 @@
 from keras.layers import *
-from little_dinosaur import load_pre_model
 from bert4keras.backend import keras, set_gelu, K, search_layer
 from bert4keras.tokenizers import Tokenizer
 from bert4keras.models import build_transformer_model
@@ -11,6 +10,8 @@ import random
 import numpy as np
 import fairies as fa
 
+# from little_dinosaur import load_pre_model
+import load_pre_model
 set_gelu('tanh')  # 切换gelu版本
     
 def read_data(fileName):
@@ -94,7 +95,7 @@ def confident_learning(
     for i in range(int(k_flod_times)):
 
         all_data = read_data(fileName)
-        all_data = all_data[:10]
+        all_data = all_data[:100]
         random.shuffle(all_data)
         random_order = range(len(all_data))
         np.random.shuffle(list(random_order))
@@ -165,7 +166,8 @@ def confident_learning(
         def predict(data):
             res = []
             for x_true, y_true in data:
-                res.extend(model.predict(x_true).argmax(axis=1))
+                # res.extend(model.predict(x_true).argmax(axis=1))
+                res.extend(model.predict(x_true).tolist())
             return res
         
         class Evaluator(keras.callbacks.Callback):
@@ -205,9 +207,15 @@ def confident_learning(
 
     return res_dict    
 
-def find_noisy_label_by_confident_learning(fileName):
+def find_noisy_label_by_confident_learning(
+        fileName,
+        pre_training_path,
+        k_flod_times = 1,
+        k_flod_num = 5
+    ):
 
-    pre_model = load_pre_model.load_pre_model()
+    pre_model = load_pre_model.load_pre_model(pre_training_path)
+    output = []
     
     for pre in pre_model:
 
@@ -225,9 +233,10 @@ def find_noisy_label_by_confident_learning(fileName):
             pre_model[pre]['dict_path'],
             isPair = False,
             model_name = model_name,
-            k_flod_times = 1,
-            k_flod_num = 1
+            k_flod_times = k_flod_times,
+            k_flod_num = k_flod_num
         )
-
-        print(len(res))
-
+        output.append(res)
+    
+    return output 
+        
