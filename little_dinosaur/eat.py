@@ -12,6 +12,8 @@ def eat(
     if not download_verify(pre_training_path):
         download_pretrain_model(pre_training_path)
 
+    # ToDO 
+
     output = find_noisy_label_by_confident_learning(fileName,pre_training_path,k_flod_times = 1,
         k_flod_num = 8)
     fa.write_npy('output.npy',output)

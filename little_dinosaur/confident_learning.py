@@ -9,6 +9,7 @@ from keras.layers import Dropout, Dense
 import random
 import numpy as np
 import fairies as fa
+import utils
 
 # from little_dinosaur import load_pre_model
 import load_pre_model
@@ -28,7 +29,21 @@ def read_data(fileName):
         
         res.append([sentence,label,id])
         
-    return res       
+    return res   
+
+def read_data_by_data(all_data):
+
+    res = []
+
+    for i in all_data:
+        
+        label = i["label"]
+        sentence = i["sentence"]
+        id = i["id"]
+        
+        res.append([sentence,label,id])
+        
+    return res         
 
 def confident_learning(
 
@@ -37,11 +52,11 @@ def confident_learning(
         checkpoint_path,
         dict_path,
         maxlen = 48,
-        batch_size = 4,
+        batch_size = 96,
         isPair = False,
         model_name = 'bert',
         k_flod_times = 10,
-        k_flod_num = 5
+        test_size = 0.2
 
     ):
     
@@ -52,6 +67,7 @@ def confident_learning(
     # 判断数据是否合理
     
     # 得到num_class
+    
     all_data = fa.read_json(fileName)
     all_class = set()
 
@@ -94,15 +110,10 @@ def confident_learning(
 
     for i in range(int(k_flod_times)):
 
-        all_data = read_data(fileName)
-        all_data = all_data[:100]
-        random.shuffle(all_data)
-        random_order = range(len(all_data))
-        np.random.shuffle(list(random_order))
-        train_data = [all_data[j] for i, j in enumerate(random_order) if i % int(k_flod_num) != 1]
-        valid_data = [all_data[j] for i, j in enumerate(random_order) if i % int(k_flod_num) == 1 ] 
+        train_data,valid_data = utils.random_split_data(fileName,test_size)
+        train_data = read_data_by_data(train_data)
+        valid_data = read_data_by_data(valid_data)
 
-        random.shuffle(train_data)
         train_generator = data_generator(train_data, batch_size)
         valid_generator = data_generator(valid_data, batch_size)
         
@@ -166,7 +177,6 @@ def confident_learning(
         def predict(data):
             res = []
             for x_true, y_true in data:
-                # res.extend(model.predict(x_true).argmax(axis=1))
                 res.extend(model.predict(x_true).tolist())
             return res
         
@@ -190,7 +200,7 @@ def confident_learning(
         model.fit(
             train_generator.forfit(),
             steps_per_epoch=len(train_generator),
-            epochs=1,
+            epochs=10,
             callbacks=[evaluator]
         )
 
@@ -208,10 +218,13 @@ def confident_learning(
     return res_dict    
 
 def find_noisy_label_by_confident_learning(
+    
         fileName,
         pre_training_path,
-        k_flod_times = 1,
-        k_flod_num = 5
+        k_flod_times = 10,
+        test_size = 0.2,
+        maxlen = 48,
+        batch_size = 96
     ):
 
     pre_model = load_pre_model.load_pre_model(pre_training_path)
@@ -232,9 +245,11 @@ def find_noisy_label_by_confident_learning(
             pre_model[pre]['checkpoint_path'],
             pre_model[pre]['dict_path'],
             isPair = False,
+            maxlen = maxlen,
+            batch_size = batch_size,
             model_name = model_name,
             k_flod_times = k_flod_times,
-            k_flod_num = k_flod_num
+            test_size = test_size
         )
         output.append(res)
     
