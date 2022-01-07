@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='little_dinosaur',
-    version='0.0.1',
+    version='0.0.2',
     description=(
         'utils for nlp'
     ),
@@ -16,6 +16,7 @@ setup(
     url='https://github.com/hgliyuhao',
     install_requires=[
         'fairies',
-        'bert4keras'
+        'bert4keras',
+        'GitPython'
     ],
 )
