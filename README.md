@@ -23,13 +23,18 @@ https://arxiv.org/abs/2002.07933
 import little_dinosaur as ld
 
 ld.eat(
-        'all.json',
-        'pre_training_path',
+        'all.json', # 你的数据集路径
+        'pre_training_path', # 模型保存路径
         true_rate = 0.3,
         k_flod_times = 1,
         test_size = 0.1
     )
 ```
+# TODO
+数据集格式说明  
+参数说明  
+
+
 
 # 更新
 
