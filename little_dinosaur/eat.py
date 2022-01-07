@@ -1,8 +1,12 @@
-# from little_dinosaur.download_utils import *
-from download_utils import *
-from load_pre_model import *
-from confident_learning import *
+from little_dinosaur.download_utils import *
+from little_dinosaur.load_pre_model import *
+from little_dinosaur.confident_learning import *
+
+# from download_utils import *
+# from load_pre_model import *
+# from confident_learning import *
 import fairies as fa
+import numpy as np
 import os
 
 def eat(

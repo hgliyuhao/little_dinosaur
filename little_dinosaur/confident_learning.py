@@ -6,13 +6,15 @@ from bert4keras.optimizers import Adam
 from bert4keras.snippets import sequence_padding, DataGenerator
 from bert4keras.snippets import open
 from keras.layers import Dropout, Dense
-import random
 import numpy as np
 import fairies as fa
-import utils
 
-# from little_dinosaur import load_pre_model
-import load_pre_model
+from little_dinosaur import utils
+from little_dinosaur import load_pre_model
+
+# import load_pre_model
+# # import utils
+
 set_gelu('tanh')  # 切换gelu版本
     
 def read_data(fileName):
@@ -163,7 +165,7 @@ def confident_learning(
 
         def evaluate(data,type,epoch):
             output = []
-            total, right = 0., 0.
+            total, right = 0.0001, 0.0001
             for x_true, y_true in data:
                 res = model.predict(x_true)
                 output.extend(res)
