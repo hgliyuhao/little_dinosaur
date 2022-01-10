@@ -8,7 +8,9 @@ def train_classification_model(
         pre_training_path,
         test_size = 0.1,
         maxlen = 48,
-        batch_size = 96
+        batch_size = 96,
+        model_path = 'model/',
+        epochs = 10
     ):
 
     pre_model = load_pre_model.load_pre_model(pre_training_path)
@@ -38,7 +40,9 @@ def train_classification_model(
                 batch_size = batch_size,
                 model_name = model_name,
                 k_flod_times = k_flod_times,
-                test_size = test_size
+                test_size = test_size,
+                model_path = model_path,
+                epochs = epochs
             )
 
 
