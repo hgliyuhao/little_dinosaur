@@ -98,9 +98,6 @@ def train_classification_model(
 
         fileName,
         pre_training_path, 
-        config_path,
-        checkpoint_path,
-        dict_path,
         other_pre_model = False,
         maxlen = 48,
         batch_size = 96,
@@ -108,7 +105,10 @@ def train_classification_model(
         isPair = False,
         model_name = 'bert',
         test_size = 0.2,
-        model_path = 'model/'
+        model_path = 'model/',
+        config_path = '',
+        checkpoint_path = '',
+        dict_path = '',
 
     ):
     
@@ -131,7 +131,7 @@ def train_classification_model(
 
     num_class = len(all_class)
 
-    config_path,checkpoint_path,dict_path,pre_training_path,model_name = load_pre_model.get_cofig_path(
+    config_path,checkpoint_path,dict_path,pre_training_path,model_name = load_pre_model.get_config_path(
         other_pre_model,
         config_path,    
         checkpoint_path,
@@ -220,16 +220,16 @@ def train_classification_model(
 def predict_classification_model(
         fileName,  
         pre_training_path,
-        config_path,
-        checkpoint_path,
-        dict_path,
         model_weight_path,
         other_pre_model = False,
         maxlen = 48,
         batch_size = 96,
         isPair = False,
         isProbability = False,
-        model_name = 'bert'   
+        model_name = 'bert',
+        config_path = '',
+        checkpoint_path = '',
+        dict_path = '',   
 ):
 
     all_data = fa.read_json(fileName)
@@ -240,7 +240,7 @@ def predict_classification_model(
 
     num_class = len(all_class)
 
-    config_path,checkpoint_path,dict_path,pre_training_path,model_name = load_pre_model.get_cofig_path(
+    config_path,checkpoint_path,dict_path,pre_training_path,model_name = load_pre_model.get_config_path(
         other_pre_model,
         config_path,    
         checkpoint_path,
@@ -291,7 +291,7 @@ def predict_classification_model(
         for x_true, y_true in test_generator:
             res.extend(model.predict(x_true).argmax(axis=1))        
 
-    for i,valid in enumerate(test_generator):
+    for i,valid in enumerate(test_data):
         if valid[2] not in res_dict:
             res_dict[valid[2]] = [] 
         res_dict[valid[2]].append(res[i])

@@ -1,3 +1,4 @@
+from little_dinosaur.download_utils import *
 import os
 
 def load_pre_model(path):
@@ -42,7 +43,7 @@ def load_pre_model(path):
 
     return pre_model
 
-def get_cofig_path(
+def get_config_path(
 
     other_pre_model,
     config_path,    
@@ -57,19 +58,27 @@ def get_cofig_path(
     model_list = ['albert','electra_small','electra_180g_small']
     if model not in model_list:
             raise ValueError(
-                "model must be albert ,electra_small or electra_180g_small"
+                "Model must be albert ,electra_small or electra_180g_small"
     )
 
     if other_pre_model:
-
-        if os.path.exists(config_path) and os.path.exists(checkpoint_path) and os.path.exists(dict_path):
+        
+        if config_path != '' and checkpoint_path != '' and dict_path != '':
             pass
         else:
             raise ValueError(
-                "If you set other_pre_model == True, you may need to make config_path,checkpoint_path,dict_path right"
+                "If use other_pre_model, you may need to set config_path,checkpoint_path,dict_path "
             )
 
     else:
+
+        pre_training_path = 'pre_model'
+        if not os.path.exists(pre_training_path):
+            os.makedirs(pre_training_path)
+
+        if not download_verify(pre_training_path):
+            download_pretrain_model(pre_training_path)
+
         model_list = ['albert','electra_small','electra_180g_small']
         if model not in model_list:
             raise ValueError(

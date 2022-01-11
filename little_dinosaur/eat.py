@@ -19,7 +19,6 @@ def eat(
     
     ):
     
-
     pre_training_path = 'pre_model'
     if not os.path.exists(pre_training_path):
         os.makedirs(pre_training_path)
