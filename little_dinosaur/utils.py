@@ -1,5 +1,9 @@
 import fairies as fa
 import random
+import os
+import shutil
+import zipfile
+from os.path import join, getsize
 
 def random_split_data(fileName,test_size = 0.2):
     
@@ -29,6 +33,14 @@ def random_split_data(fileName,test_size = 0.2):
 
     return train_data,test_data
 
+def unzip_file(zip_src, dst_dir):
+    r = zipfile.is_zipfile(zip_src)
+    if r:     
+        fz = zipfile.ZipFile(zip_src, 'r')
+        for file in fz.namelist():
+            fz.extract(file, dst_dir)       
+    else:
+        print('This is not zip')
 # train_data,test_data = random_split_data("all.json")
 
 # fa.write_json("train_data_fairies_1.json",train_data)

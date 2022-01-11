@@ -71,6 +71,3 @@ def eat(
     fa.write_json('log/wrong_case.json',maybe_wrong)
 
 
-
-# eat("test","all.json")
-
