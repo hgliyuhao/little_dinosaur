@@ -12,14 +12,18 @@ import os
 
 def eat(
 
-        fileName,
-        pre_training_path,
+        fileName,        
         true_rate = 0.3,
         k_flod_times = 10,
         test_size = 0.1
     
     ):
     
+
+    pre_training_path = 'pre_model'
+    if not os.path.exists(pre_training_path):
+        os.makedirs(pre_training_path)
+
     if not download_verify(pre_training_path):
         download_pretrain_model(pre_training_path)
 

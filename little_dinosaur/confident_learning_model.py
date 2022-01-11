@@ -65,7 +65,6 @@ def classification_model(
     if not os.path.exists(model_path):
         os.makedirs(model_path)
 
-
     res_dict = {}
     
     # TODO

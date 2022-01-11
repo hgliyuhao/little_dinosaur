@@ -41,3 +41,52 @@ def load_pre_model(path):
     pre_model['electra_180g_small']['dict_path'] = electra_180g_small_dict_path
 
     return pre_model
+
+def get_cofig_path(
+
+    other_pre_model,
+    config_path,    
+    checkpoint_path,
+    dict_path,
+    pre_training_path,
+    model = 'electra_180g_small',
+    model_name = 'bert'
+
+):  
+    pre_model = load_pre_model(pre_training_path)
+    model_list = ['albert','electra_small','electra_180g_small']
+    if model not in model_list:
+            raise ValueError(
+                "model must be albert ,electra_small or electra_180g_small"
+    )
+
+    if other_pre_model:
+
+        if os.path.exists(config_path) and os.path.exists(checkpoint_path) and os.path.exists(dict_path):
+            pass
+        else:
+            raise ValueError(
+                "If you set other_pre_model == True, you may need to make config_path,checkpoint_path,dict_path right"
+            )
+
+    else:
+        model_list = ['albert','electra_small','electra_180g_small']
+        if model not in model_list:
+            raise ValueError(
+                "model must be albert ,electra_small or electra_180g_small"
+            )
+
+        for pre in pre_model:
+            if pre == model: 
+                if pre == 'albert':
+                    model_name = 'albert' 
+                elif 'electra' in pre :
+                    model_name = 'electra'
+                else:
+                    model_name = 'bert'
+                
+                config_path = pre_model[pre]['config_path']
+                checkpoint_path = pre_model[pre]['checkpoint_path']
+                dict_path = pre_model[pre]['dict_path']
+
+    return config_path,checkpoint_path,dict_path,pre_training_path,model_name

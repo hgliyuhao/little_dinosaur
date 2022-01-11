@@ -1,6 +1,5 @@
-from little_dinosaur import utils
 from little_dinosaur import load_pre_model
-from little_dinosaur import model_nlp
+from little_dinosaur import confident_learning_model
 
 def find_noisy_label_by_confident_learning(
 
@@ -24,7 +23,7 @@ def find_noisy_label_by_confident_learning(
         else:
             model_name = 'bert'   
 
-        res  = model_nlp.classification_model(
+        res  = confident_learning_model.classification_model(
             fileName,        
             pre_model[pre]['config_path'],
             pre_model[pre]['checkpoint_path'],
