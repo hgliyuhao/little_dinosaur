@@ -49,7 +49,8 @@ def classification_model(
         model_name,
         config_path,
         checkpoint_path,
-        num_class
+        num_class,
+        learning_rate = 2e-5
     ):
     # 加载预训练模型
         if model_name == 'electra':
@@ -88,7 +89,7 @@ def classification_model(
         model = keras.models.Model(bert.model.input, output)
         model.compile(
             loss='sparse_categorical_crossentropy',
-            optimizer=Adam(2e-5),  # 用足够小的学习率
+            optimizer=Adam(learning_rate),  # 用足够小的学习率
             metrics=['accuracy'],            
         )
 
@@ -97,11 +98,12 @@ def classification_model(
 def train_classification_model(
 
         fileName,
-        pre_training_path, 
+        # pre_training_path, 
         other_pre_model = False,
         maxlen = 48,
         batch_size = 96,
         epochs = 10,
+        learning_rate = 2e-5,
         isPair = False,
         model_name = 'bert',
         test_size = 0.2,
@@ -136,7 +138,6 @@ def train_classification_model(
         config_path,    
         checkpoint_path,
         dict_path,
-        pre_training_path,
     )
 
     tokenizer = Tokenizer(dict_path, do_lower_case=True)
@@ -178,10 +179,10 @@ def train_classification_model(
     train_generator = data_generator(train_data, batch_size)
     valid_generator = data_generator(valid_data, batch_size)
         
-    model = classification_model(model_name,config_path,checkpoint_path,num_class)
+    model = classification_model(model_name,config_path,checkpoint_path,num_class,learning_rate)
 
     def evaluate(data):
-        total, right = 0., 0.
+        total, right = 1., 1.
         for x_true, y_true in data:
             res = model.predict(x_true)
             y_pred = res.argmax(axis=1)
@@ -219,9 +220,10 @@ def train_classification_model(
 
 def predict_classification_model(
         fileName,  
-        pre_training_path,
+        # pre_training_path,
         model_weight_path,
         other_pre_model = False,
+        learning_rate = 2e-5,
         maxlen = 48,
         batch_size = 96,
         isPair = False,
@@ -245,7 +247,7 @@ def predict_classification_model(
         config_path,    
         checkpoint_path,
         dict_path,
-        pre_training_path,
+        # pre_training_path,
     )
 
     tokenizer = Tokenizer(dict_path, do_lower_case=True)
@@ -278,7 +280,7 @@ def predict_classification_model(
    
     test_data = read_data(fileName)
     test_generator = data_generator(test_data, batch_size)
-    model = classification_model(model_name,config_path,checkpoint_path,num_class)
+    model = classification_model(model_name,config_path,checkpoint_path,num_class,learning_rate)
     
     model.load_weights(model_weight_path)
 

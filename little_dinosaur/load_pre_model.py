@@ -48,7 +48,7 @@ def get_config_path(
     config_path,    
     checkpoint_path,
     dict_path,
-    pre_training_path,
+    pre_training_path = 'pre_model',
     model = 'electra_180g_small',
     model_name = 'bert'
 

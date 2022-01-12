@@ -168,7 +168,7 @@ def classification_model(
 
         def evaluate(data,type,epoch):
             output = []
-            total, right = 0., 0.
+            total, right = 1., 1.
             for x_true, y_true in data:
                 res = model.predict(x_true)
                 output.extend(res)
