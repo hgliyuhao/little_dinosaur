@@ -10,6 +10,10 @@ https://arxiv.org/abs/1911.00068
 Improving Generalization by Controlling Label-Noise Information in Neural Network Weights  
 https://arxiv.org/abs/2002.07933  
 
+# 环境
+
+tensorflow <= 2.1.0 
+keras == 2.3.1
 
 <!-- # 主要功能
 * txt,json,excel处理函数
@@ -42,7 +46,7 @@ ld.train_classification_model(
         epochs = 40,
         isPair = False,
         model_name = 'bert',
-        test_size = 0.001,
+        test_size = 0.2,
         model_path = 'model/',
         learning_rate = 2e-4
 
@@ -63,7 +67,7 @@ ld.train_classification_model(
         epochs = 40,
         isPair = False,
         model_name = 'bert',
-        test_size = 0.001,
+        test_size = 0.2,
         model_path = 'model/',
         learning_rate = 2e-4,
         config_path = config_path,
