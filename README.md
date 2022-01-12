@@ -16,7 +16,7 @@ https://arxiv.org/abs/2002.07933
 - pdf抽取接口
 * nlp常用工具 -->
 # 使用  
-代码示例
+目前只适用文本分类任务
 
 ```python
 
@@ -55,9 +55,7 @@ config_path = p +'bert_config.json'
 checkpoint_path = p + 'bert_model.ckpt'
 dict_path = p +'vocab.txt'
 
-
 ld.train_classification_model(
-
         fileName,
         other_pre_model = False,
         maxlen = 48,
@@ -71,7 +69,6 @@ ld.train_classification_model(
         config_path = config_path,
         checkpoint_path = checkpoint_path,
         dict_path = dict_path,
-
     )
 
 ```
@@ -83,7 +80,7 @@ ld.train_classification_model(
 
 # 更新
 
-2022/1/12 修改内置预训练模型的下载方式
+2022/1/12 修改内置预训练模型的下载方式  
 2022/1/7 通过置信学习实现错误标签检测  
 
 
