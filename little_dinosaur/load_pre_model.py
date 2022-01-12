@@ -7,7 +7,6 @@ def load_pre_model(path):
     
     # dir_path = os.path.dirname(os.path.abspath(__file__))
     pre_path = os.path.join(path,'pre_model')
-
     pre_model['albert'] = {}
     albert_pre_path = os.path.join(pre_path,'albert_tiny_zh_google')
 

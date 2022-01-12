@@ -1,5 +1,4 @@
 from little_dinosaur import utils
-
 import git
 from git import RemoteProgress
 from tqdm import tqdm
@@ -35,7 +34,6 @@ def DownloadFile(save_url,file_name):
         file_path = os.path.join(save_url, file_name)
         
         # 打开本地文件夹路径file_path，以二进制流方式写入，保存到本地
-        from tqdm import tqdm
         with open(file_path, 'wb') as fd:
             print('开始下载文件：{},当前文件大小：{}KB'.format(file_name,total_size))
             for chunk in tqdm(iterable=res.iter_content(1024),total=total_size,unit='k',desc=None):
