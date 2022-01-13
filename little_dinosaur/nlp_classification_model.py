@@ -12,6 +12,7 @@ from keras.layers import Dropout, Dense
 import numpy as np
 import fairies as fa
 import os
+from keras.callbacks import ReduceLROnPlateau
 
 set_gelu('tanh')  # 切换gelu版本
     
@@ -105,6 +106,7 @@ def train_classification_model(
         epochs = 10,
         learning_rate = 2e-5,
         isPair = False,
+        isDynamicLr = False,
         model_name = 'bert',
         test_size = 0.2,
         model_path = 'model/',
@@ -132,6 +134,9 @@ def train_classification_model(
         all_class.add(i["label"])
 
     num_class = len(all_class)
+
+    id2label = dict(enumerate(list(all_class)))
+    label2id = {j: i for i, j in id2label.items()}
 
     config_path,checkpoint_path,dict_path,pre_training_path,model_name = load_pre_model.get_config_path(
         other_pre_model,
@@ -164,7 +169,8 @@ def train_classification_model(
 
                 batch_token_ids.append(token_ids)
                 batch_segment_ids.append(segment_ids)
-                batch_labels.append([int(label)])
+                batch_labels.append([label2id[label]])
+
                 if len(batch_token_ids) == self.batch_size or i == idxs[-1]:
                     batch_token_ids = sequence_padding(batch_token_ids)
                     batch_segment_ids = sequence_padding(batch_segment_ids)
@@ -206,15 +212,24 @@ def train_classification_model(
                 model.save_weights(model_path + 'best_model.weights')
             print(u'val_acc: %.5f, best_val_acc: %.5f, test_acc: %.5f\n'
                 % (val_acc, self.best_val_acc, 0))
-        
+
+    reduce_lr = ReduceLROnPlateau(monitor='loss', patience=10, mode='auto')  
     evaluator = Evaluator()
 
-    model.fit(
-        train_generator.forfit(),
-        steps_per_epoch=len(train_generator),
-        epochs = epochs,
-        callbacks=[evaluator]
-    )
+    if isDynamicLr:
+        model.fit(
+            train_generator.forfit(),
+            steps_per_epoch=len(train_generator),
+            epochs = epochs,
+            callbacks=[evaluator,reduce_lr]
+        )   
+    else:
+        model.fit(
+            train_generator.forfit(),
+            steps_per_epoch=len(train_generator),
+            epochs = epochs,
+            callbacks=[evaluator]
+        )
 
     keras.backend.clear_session()
 
@@ -241,6 +256,9 @@ def predict_classification_model(
         all_class.add(i["label"])
 
     num_class = len(all_class)
+    id2label = dict(enumerate(list(all_class)))
+    label2id = {j: i for i, j in id2label.items()}
+
 
     config_path,checkpoint_path,dict_path,pre_training_path,model_name = load_pre_model.get_config_path(
         other_pre_model,
@@ -270,7 +288,8 @@ def predict_classification_model(
 
                 batch_token_ids.append(token_ids)
                 batch_segment_ids.append(segment_ids)
-                batch_labels.append([int(label)])
+                batch_labels.append([label2id[label]])
+
                 if len(batch_token_ids) == self.batch_size or i == idxs[-1]:
                     batch_token_ids = sequence_padding(batch_token_ids)
                     batch_segment_ids = sequence_padding(batch_segment_ids)
@@ -296,7 +315,7 @@ def predict_classification_model(
     for i,valid in enumerate(test_data):
         if valid[2] not in res_dict:
             res_dict[valid[2]] = [] 
-        res_dict[valid[2]].append(res[i])
+        res_dict[valid[2]].append(id2label[res[i]])
         
     keras.backend.clear_session()
 

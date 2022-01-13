@@ -81,6 +81,9 @@ def classification_model(
 
     num_class = len(all_class)
 
+    id2label = dict(enumerate(list(all_class)))
+    label2id = {j: i for i, j in id2label.items()}
+
     tokenizer = Tokenizer(dict_path, do_lower_case=True)
 
     class data_generator(DataGenerator):
@@ -105,7 +108,8 @@ def classification_model(
 
                 batch_token_ids.append(token_ids)
                 batch_segment_ids.append(segment_ids)
-                batch_labels.append([int(label)])
+                batch_labels.append([label2id[label]])
+
                 if len(batch_token_ids) == self.batch_size or i == idxs[-1]:
                     batch_token_ids = sequence_padding(batch_token_ids)
                     batch_segment_ids = sequence_padding(batch_segment_ids)
@@ -216,7 +220,7 @@ def classification_model(
         for i,valid in enumerate(valid_data):
             if valid[2] not in res_dict:
                 res_dict[valid[2]] = [] 
-            res_dict[valid[2]].append(res[i])
+            res_dict[valid[2]].append(id2label[res[i]])
         
         keras.backend.clear_session()
 
