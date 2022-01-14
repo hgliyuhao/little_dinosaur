@@ -100,6 +100,7 @@ def train_classification_model(
 
         fileName,
         # pre_training_path, 
+        trainingFile = '',
         other_pre_model = False,
         maxlen = 48,
         batch_size = 96,
@@ -127,7 +128,10 @@ def train_classification_model(
     
     # 得到num_class
     
-    all_data = fa.read_json(fileName)
+    if trainingFile == "":
+        trainingFile = fileName
+
+    all_data = fa.read_json(trainingFile)
     all_class = set()
 
     for i in all_data:
@@ -135,7 +139,7 @@ def train_classification_model(
 
     num_class = len(all_class)
 
-    id2label = dict(enumerate(list(all_class)))
+    id2label = dict(enumerate(sorted(list(all_class))))
     label2id = {j: i for i, j in id2label.items()}
 
     config_path,checkpoint_path,dict_path,pre_training_path,model_name = load_pre_model.get_config_path(
@@ -236,6 +240,7 @@ def train_classification_model(
 def predict_classification_model(
         fileName,  
         # pre_training_path,
+        trainingFile,
         model_weight_path,
         other_pre_model = False,
         learning_rate = 2e-5,
@@ -249,17 +254,16 @@ def predict_classification_model(
         dict_path = '',   
 ):
 
-    all_data = fa.read_json(fileName)
+    all_data = fa.read_json(trainingFile)
     all_class = set()
 
     for i in all_data:
         all_class.add(i["label"])
 
     num_class = len(all_class)
-    id2label = dict(enumerate(list(all_class)))
+    id2label = dict(enumerate(sorted(list(all_class))))
     label2id = {j: i for i, j in id2label.items()}
-
-
+    
     config_path,checkpoint_path,dict_path,pre_training_path,model_name = load_pre_model.get_config_path(
         other_pre_model,
         config_path,    

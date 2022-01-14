@@ -1,5 +1,6 @@
 from little_dinosaur.eat import (
-    eat
+    eat,
+    self_learning
 )
 
 from little_dinosaur.nlp_classification_model import (

@@ -35,6 +35,22 @@ ld.eat(
         test_size = 0.1
     )
 
+# 或者    
+ld.self_learning(
+    'all.json', # 你的数据集路径
+    other_pre_model = False,
+    maxlen = 48,
+    batch_size = 96,
+    epochs = 20,
+    isPair = False,
+    model_name = 'bert',
+    test_size = 0.5,
+    model_path = 'model_self_learning/',
+    learning_rate = 3e-4,
+    config_path = "",
+    checkpoint_path = "",
+    dict_path = "",
+)
 #  你可以使用下面的方式快速微调
 
 ld.train_classification_model(
@@ -61,7 +77,7 @@ dict_path = p +'vocab.txt'
 
 ld.train_classification_model(
         fileName,
-        other_pre_model = False,
+        other_pre_model = True,
         maxlen = 48,
         batch_size = 96,
         epochs = 40,
@@ -79,11 +95,11 @@ ld.train_classification_model(
 # TODO
 数据集格式说明  
 参数说明  
-
-
+更新PU Learning 和PN Learning
 
 # 更新
 
+2022/1/14 新增self_learning 更快的寻找错误标签的方式  
 2022/1/12 修改内置预训练模型的下载方式  
 2022/1/7 通过置信学习实现错误标签检测  
 

@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+
+
 from setuptools import setup, find_packages
 
 setup(
     name='little_dinosaur',
-    version='0.0.14',
+    version='0.0.20',
     description=(
         'utils for nlp'
     ),

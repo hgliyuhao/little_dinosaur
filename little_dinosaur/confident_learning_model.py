@@ -81,7 +81,7 @@ def classification_model(
 
     num_class = len(all_class)
 
-    id2label = dict(enumerate(list(all_class)))
+    id2label = dict(enumerate(sorted(list(all_class))))
     label2id = {j: i for i, j in id2label.items()}
 
     tokenizer = Tokenizer(dict_path, do_lower_case=True)
