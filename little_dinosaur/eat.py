@@ -78,6 +78,7 @@ def eat(
 def self_learning(
     fileName,
     other_pre_model = False,
+    learning_times = 5,
     maxlen = 48,
     batch_size = 96,
     epochs = 20,
@@ -97,7 +98,7 @@ def self_learning(
     if not os.path.exists("log"):
         os.makedirs("log")
 
-    for i in range(5):
+    for i in range(learning_times):
 
         train_classification_model(
 

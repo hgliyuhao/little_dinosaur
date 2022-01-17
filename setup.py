@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='little_dinosaur',
-    version='0.0.20',
+    version='0.0.21',
     description=(
         'utils for nlp'
     ),
