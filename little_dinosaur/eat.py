@@ -16,7 +16,9 @@ def eat(
         fileName,        
         true_rate = 0.3,
         k_flod_times = 10,
-        test_size = 0.1
+        test_size = 0.1,
+        maxlen = 48,
+        batch_size = 96
     
     ):
     
@@ -35,7 +37,9 @@ def eat(
         fileName,
         pre_training_path,
         k_flod_times = k_flod_times,
-        test_size = test_size
+        test_size = test_size,
+        maxlen = maxlen,
+        batch_size = batch_size
     )
 
     if not os.path.exists("log"):

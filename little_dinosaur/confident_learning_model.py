@@ -126,6 +126,8 @@ def classification_model(
         train_generator = data_generator(train_data, batch_size)
         valid_generator = data_generator(valid_data, batch_size)
         
+        learning_rate = 2e-5
+
         # 加载预训练模型
         if model_name == 'electra':
 
@@ -136,7 +138,9 @@ def classification_model(
                 return_keras_model=False,
 
             )  # 建立模型，加载权重
-    
+
+            learning_rate = 2e-4
+
         elif model_name == 'albert' :
             bert = build_transformer_model(
                 config_path=config_path,
@@ -165,7 +169,7 @@ def classification_model(
         model.compile(
 
             loss='sparse_categorical_crossentropy',
-            optimizer=Adam(2e-5),  # 用足够小的学习率
+            optimizer=Adam(learning_rate),  # 用足够小的学习率
             metrics=['accuracy'],
             
         )
