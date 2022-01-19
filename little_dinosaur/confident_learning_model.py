@@ -224,7 +224,7 @@ def classification_model(
         for i,valid in enumerate(valid_data):
             if valid[2] not in res_dict:
                 res_dict[valid[2]] = [] 
-            res_dict[valid[2]].append(id2label[res[i]])
+            res_dict[valid[2]].append(res[i])
         
         keras.backend.clear_session()
 

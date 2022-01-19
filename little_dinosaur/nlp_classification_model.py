@@ -101,6 +101,7 @@ def train_classification_model(
         fileName,
         # pre_training_path, 
         trainingFile = '',
+        vaild_fileName = '',
         other_pre_model = False,
         maxlen = 48,
         batch_size = 96,
@@ -182,7 +183,13 @@ def train_classification_model(
                     yield [batch_token_ids, batch_segment_ids], batch_labels
                     batch_token_ids, batch_segment_ids, batch_labels = [], [], []
 
-    train_data,valid_data = utils.random_split_data(fileName,test_size)
+    if vaild_fileName == "":
+        train_data,valid_data = utils.random_split_data(fileName,test_size)
+        fa.write_json(model_path +'train.json',train_data,isLine=True)
+        fa.write_json(model_path +'valid.json',valid_data,isLine=True)
+    else:
+        pass
+
     train_data = read_data_by_data(train_data)
     valid_data = read_data_by_data(valid_data)
 
@@ -217,7 +224,7 @@ def train_classification_model(
             print(u'val_acc: %.5f, best_val_acc: %.5f, test_acc: %.5f\n'
                 % (val_acc, self.best_val_acc, 0))
 
-    reduce_lr = ReduceLROnPlateau(monitor='loss', patience=10, mode='auto')  
+    reduce_lr = ReduceLROnPlateau(monitor='loss', patience= 3, mode='auto')  
     evaluator = Evaluator()
 
     if isDynamicLr:

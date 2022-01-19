@@ -52,10 +52,17 @@ def eat(
 
     all = fa.read_json(fileName)
 
+    all_class = set()
+
+    for i in all:
+        all_class.add(i["label"])
+
+    train_id2label = dict(enumerate(sorted(list(all_class))))
+
     id2label = {}
 
     for right in all:
-        id2label[right['id']] = int(right['label'])
+        id2label[right['id']] = right['label']
 
     res = {}
 
@@ -68,14 +75,14 @@ def eat(
                 new = np.array(r)
                 
                 if new.max() > true_rate :
-                    res[j].append(new.argmax(axis=0))
+                    res[j].append(train_id2label[new.argmax(axis=0)])
 
-    maybe_wrong = []
+    maybe_wrong = {}
 
     for j in res:
-        if len(res[j]) > 1 and len(list(set(res[j]))) ==1:
+        if len(res[j]) > 1 and len(list(set(res[j]))) == 1:
             if id2label[j]  not in res[j]:
-                maybe_wrong.append(j)
+                maybe_wrong[j] = list(set(res[j]))
 
     fa.write_json('log/wrong_case.json',maybe_wrong)
 
