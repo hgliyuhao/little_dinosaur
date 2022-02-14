@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-
-
 from setuptools import setup, find_packages
 
 setup(
     name='little_dinosaur',
-    version='0.0.25',
+    version='0.0.31',
     description=(
         'utils for nlp'
     ),
@@ -20,6 +18,7 @@ setup(
         'fairies',
         'bert4keras',
         'GitPython',
-        'numpy'
+        'numpy',
+        'synonyms'
     ],
 )

@@ -4,11 +4,13 @@
 # 安装  
 pip install little_dinosaur
 
-# 论文  
+# 参考论文  
 Confident Learning: Estimating Uncertainty in Dataset Labels  
 https://arxiv.org/abs/1911.00068  
 Improving Generalization by Controlling Label-Noise Information in Neural Network Weights  
 https://arxiv.org/abs/2002.07933  
+Unsupervised Data Augmentation for Consistency Training
+https://arxiv.org/pdf/1904.12848v2.pdf
 
 # 环境
 
@@ -19,6 +21,13 @@ keras == 2.3.1
 * txt,json,excel处理函数
 - pdf抽取接口
 * nlp常用工具 -->
+# 数据格式
+
+为保证工具正常工作，请参考example.json 需要保证每条数据都是一个字典 且字典中包含"id","label"和"sentence"  
+
+{"id": 2214, "label": "2", "sentence": "我退货申请撤销 一下吧"}    
+{"id": 1850, "label": "7", "sentence": "好的  谢谢，希望进完发货"}  
+
 # 使用  
 目前只适用文本分类任务
 
@@ -29,7 +38,7 @@ keras == 2.3.1
 import little_dinosaur as ld
 
 ld.eat(
-        'all.json', # 你的数据集路径
+        'example.json', # 你的数据集路径
         true_rate = 0.3,
         k_flod_times = 1,
         test_size = 0.1
@@ -37,7 +46,7 @@ ld.eat(
 
 # 或者    
 ld.self_learning(
-    'all.json', # 你的数据集路径
+    'example.json', # 你的数据集路径
     other_pre_model = False,
     maxlen = 48,
     batch_size = 96,
@@ -51,6 +60,8 @@ ld.self_learning(
     checkpoint_path = "",
     dict_path = "",
 )
+
+
 #  你可以使用下面的方式快速微调
 
 ld.train_classification_model(
@@ -99,6 +110,7 @@ ld.train_classification_model(
 
 # 更新
 
+2022/2/14 新增数据增强方法 主要针对多分类任务中的稀疏样本
 2022/1/14 新增self_learning 更快的寻找错误标签的方式  
 2022/1/12 修改内置预训练模型的下载方式  
 2022/1/7 通过置信学习实现错误标签检测  

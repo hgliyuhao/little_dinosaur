@@ -13,6 +13,7 @@ import numpy as np
 import fairies as fa
 import os
 from keras.callbacks import ReduceLROnPlateau
+from sklearn.utils.class_weight import compute_class_weight
 
 set_gelu('tanh')  # 切换gelu版本
     
@@ -109,6 +110,7 @@ def train_classification_model(
         learning_rate = 2e-5,
         isPair = False,
         isDynamicLr = False,
+        isBalanceClassWeight = False,
         model_name = 'bert',
         test_size = 0.2,
         model_path = 'model/',
@@ -135,13 +137,30 @@ def train_classification_model(
     all_data = fa.read_json(trainingFile)
     all_class = set()
 
+    labels,weight_labels,weight_classes = [],[],[]
+
     for i in all_data:
         all_class.add(i["label"])
+        labels.append(i["label"])
 
     num_class = len(all_class)
 
     id2label = dict(enumerate(sorted(list(all_class))))
     label2id = {j: i for i, j in id2label.items()}
+    
+    # compute_weight
+    for id in id2label:
+        weight_classes.append(id)
+
+    for l in labels:
+        weight_labels.append(label2id[l])
+
+    class_weight = 'balanced'
+    weight = compute_class_weight(class_weight, weight_classes, weight_labels)
+    weight = dict(enumerate(weight))
+
+    for l in labels:
+        weight_labels.append(label2id[l])
 
     config_path,checkpoint_path,dict_path,pre_training_path,model_name = load_pre_model.get_config_path(
         other_pre_model,
@@ -188,7 +207,8 @@ def train_classification_model(
         fa.write_json(model_path +'train.json',train_data,isLine=True)
         fa.write_json(model_path +'valid.json',valid_data,isLine=True)
     else:
-        pass
+        train_data = fa.read_json(fileName)
+        valid_data = fa.read_json(vaild_fileName)
 
     train_data = read_data_by_data(train_data)
     valid_data = read_data_by_data(valid_data)
@@ -224,23 +244,42 @@ def train_classification_model(
             print(u'val_acc: %.5f, best_val_acc: %.5f, test_acc: %.5f\n'
                 % (val_acc, self.best_val_acc, 0))
 
-    reduce_lr = ReduceLROnPlateau(monitor='loss', patience= 3, mode='auto')  
+    reduce_lr = ReduceLROnPlateau(monitor='loss', patience= 2, mode='auto')  
     evaluator = Evaluator()
 
     if isDynamicLr:
-        model.fit(
-            train_generator.forfit(),
-            steps_per_epoch=len(train_generator),
-            epochs = epochs,
-            callbacks=[evaluator,reduce_lr]
-        )   
+
+        if isBalanceClassWeight:
+            model.fit(
+                train_generator.forfit(),
+                steps_per_epoch=len(train_generator),
+                epochs = epochs,
+                class_weight = weight,
+                callbacks=[evaluator]
+            )
+        else:    
+            model.fit(
+                train_generator.forfit(),
+                steps_per_epoch=len(train_generator),
+                epochs = epochs,
+                callbacks=[evaluator,reduce_lr]
+            )   
     else:
-        model.fit(
-            train_generator.forfit(),
-            steps_per_epoch=len(train_generator),
-            epochs = epochs,
-            callbacks=[evaluator]
-        )
+        if isBalanceClassWeight:
+            model.fit(
+                train_generator.forfit(),
+                steps_per_epoch=len(train_generator),
+                epochs = epochs,
+                class_weight = weight,
+                callbacks=[evaluator]
+            )
+        else:
+            model.fit(
+                train_generator.forfit(),
+                steps_per_epoch=len(train_generator),
+                epochs = epochs,
+                callbacks=[evaluator]
+            )
 
     keras.backend.clear_session()
 

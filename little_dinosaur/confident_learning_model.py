@@ -1,6 +1,7 @@
 from little_dinosaur import utils
 from little_dinosaur import load_pre_model
 
+
 from keras.layers import *
 from bert4keras.backend import keras, set_gelu, K, search_layer
 from bert4keras.tokenizers import Tokenizer
@@ -12,6 +13,7 @@ from keras.layers import Dropout, Dense
 import numpy as np
 import fairies as fa
 import os
+from sklearn.utils.class_weight import compute_class_weight
 
 set_gelu('tanh')  # 切换gelu版本
     
@@ -75,14 +77,31 @@ def classification_model(
     
     all_data = fa.read_json(fileName)
     all_class = set()
+    labels,weight_labels,weight_classes = [],[],[]
 
     for i in all_data:
         all_class.add(i["label"])
+        labels.append(i["label"])
 
     num_class = len(all_class)
 
     id2label = dict(enumerate(sorted(list(all_class))))
     label2id = {j: i for i, j in id2label.items()}
+    
+    # compute_weight
+    for id in id2label:
+        weight_classes.append(id)
+
+    for l in labels:
+        weight_labels.append(label2id[l])
+
+    class_weight = 'balanced'
+    weight = compute_class_weight(class_weight, weight_classes, weight_labels)
+    weight = dict(enumerate(weight))
+
+    for l in labels:
+        weight_labels.append(label2id[l])
+
 
     tokenizer = Tokenizer(dict_path, do_lower_case=True)
 
@@ -209,6 +228,14 @@ def classification_model(
                     % (val_acc, self.best_val_acc, 0))
         
         evaluator = Evaluator()
+
+        # model.fit(
+        #     train_generator.forfit(),
+        #     steps_per_epoch=len(train_generator),
+        #     epochs = epochs,
+        #     class_weight = weight,
+        #     callbacks=[evaluator]
+        # )
 
         model.fit(
             train_generator.forfit(),
