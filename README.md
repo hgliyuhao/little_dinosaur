@@ -8,9 +8,9 @@ pip install little_dinosaur
 Confident Learning: Estimating Uncertainty in Dataset Labels  
 https://arxiv.org/abs/1911.00068  
 Improving Generalization by Controlling Label-Noise Information in Neural Network Weights  
-https://arxiv.org/abs/2002.07933  
-Unsupervised Data Augmentation for Consistency Training
-https://arxiv.org/pdf/1904.12848v2.pdf
+https://arxiv.org/abs/2002.07933   
+Unsupervised Data Augmentation for Consistency Training  
+https://arxiv.org/pdf/1904.12848v2.pdf  
 
 # 环境
 
@@ -110,7 +110,7 @@ ld.train_classification_model(
 
 # 更新
 
-2022/2/14 新增数据增强方法 主要针对多分类任务中的稀疏样本
+2022/2/14 新增数据增强方法 主要针对多分类任务中的稀疏样本  
 2022/1/14 新增self_learning 更快的寻找错误标签的方式  
 2022/1/12 修改内置预训练模型的下载方式  
 2022/1/7 通过置信学习实现错误标签检测  

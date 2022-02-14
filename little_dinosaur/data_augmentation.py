@@ -7,7 +7,7 @@ import copy
 import synonyms
 import time
 from tqdm import tqdm
-from little_dinosaur import translate
+from little_dinosaur.translate import *
 
 def jieba_cut(text):
     
@@ -134,14 +134,14 @@ def label_imbalance_augmentation(
         for t in translate_lists:
             temp_translate.append(t)
             if len(temp_translate) == 200 :
-                tran_res = translate.translate(temp_translate,'zh','en')
+                tran_res = translate(temp_translate,'zh','en')
                 for res in tran_res:
                     if res in need_to_translate:
                         need_to_translate[res] = tran_res[res]
                 time.sleep(1)
                 temp_translate = []
             elif t == translate_lists[-1]:
-                tran_res = translate.translate(temp_translate,'zh','en')
+                tran_res = translate(temp_translate,'zh','en')
                 for res in tran_res:
                     if res in need_to_translate:
                         need_to_translate[res] = tran_res[res]
@@ -156,13 +156,13 @@ def label_imbalance_augmentation(
         for t in translate_back_lists:
             temp_translate.append(t)
             if len(temp_translate) == 200 :
-                tran_res = translate.translate(temp_translate,'en','zh')
+                tran_res = translate(temp_translate,'en','zh')
                 for res in tran_res:
                     translate_back[res] = tran_res[res]
                 time.sleep(1)
                 temp_translate = []
             elif t == translate_lists[-1]:
-                tran_res = translate.translate(temp_translate,'en','zh')
+                tran_res = translate(temp_translate,'en','zh')
                 for res in tran_res:
                     translate_back[res] = tran_res[res]
                 time.sleep(1)
