@@ -1,8 +1,15 @@
 # little_dinosaur
-利用算法自动检测出中文数据集中的错误标签
+
+用于中文NLP任务，数据增强，数据为中心处理工具  
+
+* 针对中文语料做数据增强
+- 针对不同的NLP任务，做有针对性的数据增强
+* 利用算法自动检测出数据集中的错误标签
+
 
 # 安装  
 pip install little_dinosaur
+
 
 # 参考论文  
 Confident Learning: Estimating Uncertainty in Dataset Labels  
@@ -106,7 +113,9 @@ ld.train_classification_model(
 # TODO
 数据集格式说明  
 参数说明  
-更新PU Learning 和PN Learning
+更新PU Learning 和PN Learning  
+效果展示  
+对单条数据进行数据增强  
 
 # 更新
 
