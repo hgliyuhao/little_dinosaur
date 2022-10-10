@@ -1,4 +1,3 @@
-from typing import List
 import numpy as np
 from keras.layers import *
 from keras.models import *
@@ -20,7 +19,7 @@ from model_utils import data_generators
 from model_utils import bert_model
 
 
-def train_classification_model(data, save_name):
+def train_classification_model(data, save_name,isDrop_noisy=False):
 
     def evaluate(data):
         total, right = 0., 0.
@@ -55,7 +54,7 @@ def train_classification_model(data, save_name):
     maxlen = int(conf["maxlen"])
     batch_size = int(conf["batch_size"])
     epochs = int(conf["epochs"])
-    learning_rate = float(conf["epochs"])
+    learning_rate = float(conf["learning_rate"])
 
     # 合理检查
     data = data_utils.add_id(data)
@@ -63,7 +62,7 @@ def train_classification_model(data, save_name):
     train_data, test_data, id2label, label2id = data_utils.load_data(
         data)
     class_num = len(id2label)
-
+       
     train_generator = data_generators.classification(train_data, batch_size)
     valid_generator = data_generators.classification(test_data, batch_size)
 
@@ -74,12 +73,112 @@ def train_classification_model(data, save_name):
 
     evaluator = Evaluator()
 
-    model.fit(train_generator.forfit(),
-              steps_per_epoch=len(train_generator),
-              epochs=epochs,
-              callbacks=[evaluator])
+    if isDrop_noisy and epochs > 1:
 
-    keras.backend.clear_session()
+        noisy_data, temp_data = [], []
+
+        model.fit(train_generator.forfit(),
+                  steps_per_epoch=len(train_generator),
+                  epochs=1,
+                  callbacks=[evaluator])
+
+        res = []
+
+        for x_true, y_true in train_generator:
+
+            y_pred_res = model.predict(x_true)
+            y_true = y_true[:, 0]
+
+            y_res = y_pred_res.tolist()
+            res.extend(y_res)
+
+        for t, r in zip(train_data, res):
+            label = t[1]
+            # 根据标注的类别计算差异
+            if r[label] < (1/class_num/4):
+                noisy_data.append(t)
+            else:
+                temp_data.append(t)
+
+        temp_generator = data_generators.classification(
+            temp_data, batch_size)
+
+        model.fit(train_generator.forfit(),
+                  steps_per_epoch=len(temp_generator),
+                  epochs=epochs - 1,
+                  callbacks=[evaluator])
+
+        res = []
+
+        for x_true, y_true in temp_generator:
+
+            y_pred_res = model.predict(x_true)
+            y_true = y_true[:, 0]
+
+            y_res = y_pred_res.tolist()
+            res.extend(y_res)
+
+        for t, r in zip(temp_data, res):
+            label = t[1]
+            if r[label] < (1/class_num/3):
+                noisy_data.append(t)
+
+        # noisy_data数据格式 [sentence_1, sentence_2, label, noisy_id]
+        noisy_ids, output = {}, []
+        for i in noisy_data:
+            noisy_ids[i[2]] = 0
+
+        for i in data:
+            id = i["noisy_id"]
+            if id in noisy_ids:
+                output.append(i)
+
+        noisy_list = list(noisy_ids)
+
+        keras.backend.clear_session()
+
+        return output, noisy_list, data
+
+    else:
+
+        model.fit(train_generator.forfit(),
+                  steps_per_epoch=len(train_generator),
+                  epochs=epochs,
+                  callbacks=[evaluator])
+
+        res = []
+
+        noisy_data = []
+
+        for x_true, y_true in train_generator:
+
+            y_pred_res = model.predict(x_true)
+            y_true = y_true[:, 0]
+
+            y_res = y_pred_res.tolist()
+            res.extend(y_res)
+
+        for t, r in zip(train_data, res):
+            label = t[1]
+            # 根据标注的类别计算差异
+            if r[label] < (1/class_num/3):
+                noisy_data.append(t)
+
+        noisy_ids, output = {}, []
+        for i in noisy_data:
+            noisy_ids[i[2]] = 0
+
+        for i in data:
+            id = i["noisy_id"]
+            if id in noisy_ids:
+                output.append(i)
+
+        noisy_list = list(noisy_ids)
+
+        keras.backend.clear_session()
+        
+        return output, noisy_list, data
+
 
 
 def train_classification_model_with_pair(data, save_name, isDrop_noisy=False):
@@ -160,7 +259,7 @@ def train_classification_model_with_pair(data, save_name, isDrop_noisy=False):
         for t, r in zip(train_data, res):
             label = t[2]
             # 根据标注的类别计算差异
-            if r[label] < 0.1:
+            if r[label] < (1/class_num/4):
                 noisy_data.append(t)
             else:
                 temp_data.append(t)
@@ -185,7 +284,7 @@ def train_classification_model_with_pair(data, save_name, isDrop_noisy=False):
 
         for t, r in zip(temp_data, res):
             label = t[2]
-            if r[label] < 0.2:
+            if r[label] < (1/class_num/3):
                 noisy_data.append(t)
 
         # noisy_data数据格式 [sentence_1, sentence_2, label, noisy_id]
@@ -226,7 +325,7 @@ def train_classification_model_with_pair(data, save_name, isDrop_noisy=False):
         for t, r in zip(train_data, res):
             label = t[2]
             # 根据标注的类别计算差异
-            if r[label] < 0.2:
+            if r[label] < (1/class_num/3):
                 noisy_data.append(t)
 
         noisy_ids, output = {}, []
