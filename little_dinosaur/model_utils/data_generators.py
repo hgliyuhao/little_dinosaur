@@ -1,15 +1,9 @@
-from model_utils.utils import *
+from model_utils import utils
 from bert4keras.snippets import sequence_padding, DataGenerator
 from bert4keras.tokenizers import Tokenizer
 
-conf = read_config("model.conf")
-
-config_path = conf["config_path"]
-checkpoint_path = conf["checkpoint_path"]
-dict_path = conf["dict_path"]
+config_path,checkpoint_path,dict_path,maxlen,batch_size,epochs,learning_rate = utils.read_config("model.conf")
 tokenizer = Tokenizer(dict_path, do_lower_case=True)
-maxlen = int(conf["maxlen"])
-
 
 class classification(DataGenerator):
     """数据生成器

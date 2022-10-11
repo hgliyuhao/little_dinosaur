@@ -3,6 +3,15 @@ import fairies as fa
 # {"id": 2214, "label": "2", "sentence": "我退货申请撤销 一下吧"}
 # {"id": 1850, "label": "7", "sentence": "好的 谢谢，希望进完发货"}
 
+# {"id": 2214, "label": "2", "sentence_1": "我退货申请撤销 一下吧", "sentence_2": "好的 谢谢，希望进完发货"},
+# {"id": 2214, "label": "2", "sentence_1": "我退货申请撤销 一下吧", "sentence_2": "好的 谢谢，希望进完发货"},
+
+
+def convert_data_to_train(data):
+
+    data = add_id(data)
+    return data
+
 
 def add_id(data):
 
@@ -64,7 +73,8 @@ def load_test_data_pair_texts(train_data, test_data):
         sentence_1 = d["sentence_1"]
         sentence_2 = d["sentence_2"]
         label = label2id[d["label"]]
-        test.append([sentence_1, sentence_2, label])
+        noisy_id = d["noisy_id"]
+        test.append([sentence_1, sentence_2, label, noisy_id])
 
     return test, id2label, label2id
 
@@ -101,6 +111,7 @@ def load_test_data(train_data, test_data):
     for d in test_data:
         sentence = d["sentence"]
         label = label2id[d["label"]]
-        test.append([sentence, label])
+        noisy_id = d["noisy_id"]
+        test.append([sentence, label, noisy_id])
 
     return test, id2label, label2id

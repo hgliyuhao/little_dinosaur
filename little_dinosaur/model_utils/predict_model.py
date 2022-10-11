@@ -21,14 +21,8 @@ from model_utils import bert_model
 
 def predict_classification_model(train_data, test_data, weights_name):
 
-    conf = utils.read_config("model.conf")
-
-    config_path = conf["config_path"]
-    checkpoint_path = conf["checkpoint_path"]
-    dict_path = conf["dict_path"]
+    config_path,checkpoint_path,dict_path,maxlen,batch_size,epochs,learning_rate = utils.read_config("model.conf")
     tokenizer = Tokenizer(dict_path, do_lower_case=True)
-    maxlen = int(conf["maxlen"])
-    batch_size = int(conf["batch_size"])
 
     # 合理检查
     test, id2label, label2id = data_utils.load_test_data(
@@ -66,14 +60,8 @@ def predict_classification_model(train_data, test_data, weights_name):
 
 def predict_classification_model_with_pair(train_data, test_data, weights_name):
 
-    conf = utils.read_config("model.conf")
-
-    config_path = conf["config_path"]
-    checkpoint_path = conf["checkpoint_path"]
-    dict_path = conf["dict_path"]
+    config_path,checkpoint_path,dict_path,maxlen,batch_size,epochs,learning_rate = utils.read_config("model.conf")
     tokenizer = Tokenizer(dict_path, do_lower_case=True)
-    maxlen = int(conf["maxlen"])
-    batch_size = int(conf["batch_size"])
 
     # 合理检查
     test, id2label, label2id = data_utils.load_test_data_pair_texts(
@@ -111,7 +99,4 @@ def predict_classification_model_with_pair(train_data, test_data, weights_name):
 
 
 if __name__ == '__main__':
-
-    data = fa.read("data/train_name_label_data.json")
-
-    train_pair_classification_model(data, 'model/temp.weights')
+    pass

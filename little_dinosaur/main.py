@@ -1,45 +1,54 @@
 import fairies as fa
-from model_utils import *
 from model_utils import train_model
 from model_utils import predict_model
-
-# def find_noisy_label
-# data = fa.read("data/train_name_label_data.json")
-
-# for i in range(10):
-
-#     train_model.train_classification_model_with_pair(data,'model/temp.weights')
-#     res = predict_model.predict_classification_model_with_pair(data, data, 'model/temp.weights')
-#     fa.write_npy("res_{}.json".format(i),res)
-
-# data = fa.read("data/train_name_label_data.json")
-
-# data = data[:1000]
-
-# res = train_model.train_classification_model_with_pair(data,
-#                                                        'model/temp.weights',
-#                                                        isDrop_noisy=True)
-
-# fa.write_json("noisy_label.json", res, isIndent=True)
-
-# test noisy_label
+from model_utils import data_utils
+from model_utils import find_noisy_labels
 
 
-def find_noisy_label_drop():
+def train_classification_model(data, model_save_name, isPair=False):
 
-    times = 5
+    if isPair:
+        train_model.train_classification_model_with_pair(data, model_save_name)
+    else:
+        train_model.train_classification_model(data, model_save_name)
 
-    data = fa.read("data/train_name_label_data.json")
+
+def predict_classification_model(train_data,
+                                 test_data,
+                                 model_save_name,
+                                 isPair=False):
+
+    if isPair:
+        res = predict_model.predict_classification_model_with_pair(
+            train_data, test_data, model_save_name)
+    else:
+        res = predict_model.predict_classification_model(
+            train_data, test_data, model_save_name)
+    return res
+
+
+def find_noisy_label_drop(data,
+                          model_save_name,
+                          isPair=False,
+                          times=5,
+                          isDrop_noisy=True):
 
     final_noisy_list = []
     output = []
 
-    for i in range(times):
-        output, noisy_list, data = train_model.train_classification_model_with_pair(
-            data, 'model/temp.weights', isDrop_noisy=True)
-        final_noisy_list.extend(noisy_list)
+    if isPair:
 
-    # final_noisy_list = list(set(final_noisy_list))
+        for i in range(times):
+            output, noisy_list, data = find_noisy_labels.find_classification_noisy_labels_with_pair(
+                data, model_save_name, isDrop_noisy=isDrop_noisy)
+            final_noisy_list.extend(noisy_list)
+    else:
+
+        for i in range(times):
+            output, noisy_list, data = find_noisy_labels.find_classification_noisy_labels(
+                data, model_save_name, isDrop_noisy=isDrop_noisy)
+            final_noisy_list.extend(noisy_list)
+
     noisy_dict = {}
     for nl in final_noisy_list:
         if nl not in noisy_dict:
@@ -53,4 +62,3 @@ def find_noisy_label_drop():
 
     fa.write_json("noisy_label.json", output, isIndent=True)
 
-find_noisy_label_drop()

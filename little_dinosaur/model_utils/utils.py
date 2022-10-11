@@ -17,7 +17,22 @@ def read_config(conf_path):
         items = cf.items(s)
         for i in items:
             conf_dict[i[0]] = i[1]
-    return conf_dict
+
+    config_path = conf_dict["config_path"]
+    checkpoint_path = conf_dict["checkpoint_path"]
+    dict_path = conf_dict["dict_path"]
+    maxlen = int(conf_dict["maxlen"])
+    batch_size = int(conf_dict["batch_size"])
+    epochs = int(conf_dict["epochs"])
+    learning_rate = float(conf_dict["learning_rate"])
+    isElectra = conf_dict["iselectra"]
+
+    if isElectra == "True":
+        isElectra = True
+    else:
+        isElectra = False 
+
+    return config_path,checkpoint_path,dict_path,maxlen,batch_size,epochs,learning_rate
 
 
 def convertNumToChinese(text):
