@@ -2,15 +2,13 @@
 
 针对中文nlp任务数据集 实现工具自动检测noisy label 
 
+  
 # 环境
 
 tensorflow <= 2.1.0 
 keras == 2.3.1
 bert4keras
 fairies
-
-# TODO
-many things to do
 
 # 数据格式
 
@@ -52,6 +50,12 @@ train_classification_model(data, model_save_name)
 res = predict_classification_model(data, data, model_save_name)
 
 ```
+
+# 效果
+
+榜单地址 https://www.cluebenchmarks.com/dcrank.html
+
+![contents](image/imgae_0.png)
 
 ## FAQ
 
