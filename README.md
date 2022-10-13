@@ -5,10 +5,10 @@
   
 # 环境
 
-tensorflow <= 2.1.0 
-keras == 2.3.1
-bert4keras
-fairies
+tensorflow <= 2.1.0  
+keras == 2.3.1  
+bert4keras  
+fairies  
 
 # 数据格式
 
