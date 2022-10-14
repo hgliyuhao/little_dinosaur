@@ -68,7 +68,7 @@ res = predict_classification_model(data, data, model_save_name)
 
 # 参考论文  
 Confident Learning: Estimating Uncertainty in Dataset Labels  
-Improving Generalization by Controlling Label-Noise Information in Neural Network Weights  
-Unsupervised Data Augmentation for Consistency Training  
+<!-- Improving Generalization by Controlling Label-Noise Information in Neural Network Weights  
+Unsupervised Data Augmentation for Consistency Training   -->
 DivideMix: Learning with Noisy Labels as Semi-supervised Learning  
 Training Deep Neural Networks on Noisy Labels with Bootstrapping  
