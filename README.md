@@ -34,7 +34,7 @@ model_save_name = "model/test.weights"
 find_noisy_label_drop(data,
                       model_save_name,
                       isPair=False,
-                      times=2,
+                      times=5,
                       isDrop_noisy=True)
 
 
