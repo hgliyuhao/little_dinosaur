@@ -115,7 +115,7 @@ def find_classification_noisy_labels(data,
             temp_generator = data_generators.classification(
                 temp_data, batch_size)
 
-        model.fit(train_generator.forfit(),
+        model.fit(temp_generator.forfit(),
                   steps_per_epoch=len(temp_generator),
                   epochs=epochs - 1,
                   callbacks=[evaluator])
