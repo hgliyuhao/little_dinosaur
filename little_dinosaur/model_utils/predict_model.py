@@ -48,6 +48,7 @@ def predict_classification_model(test_data,
     model.load_weights(weights_name)
 
     res = []
+    loss = []
 
     for x_true, y_true in test_generator:
 
@@ -58,8 +59,12 @@ def predict_classification_model(test_data,
         y_res = y_pred.tolist()
         res.extend(y_res)
 
-    for t, r in zip(test_data, res):
-        t["score"] = id2label[r]
+        for i,score in enumerate(y_pred_res):
+            loss.append(score[y_true[i]])
+
+    for num in range(len(test_data)):
+        test_data[num]["pre_label"] = id2label[res[num]]
+        test_data[num]["loss"] = float(loss[num])
 
     keras.backend.clear_session()
 

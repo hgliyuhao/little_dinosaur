@@ -86,6 +86,8 @@ def train_classification_model(data,
               epochs=epochs,
               callbacks=[evaluator])
 
+    keras.backend.clear_session()
+
     return model
 
 if __name__ == '__main__':
